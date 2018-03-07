@@ -38,13 +38,6 @@ class Client
         $this->password = $password ?: getenv('TRANSMISSION_PASSWORD');
     }
 
-    public function authenticate($username = null, $password = null)
-    {
-        $this->username = $username ?: config('TRANSMISSION_USERNAME');
-        $this->password = $password ?: config('TRANSMISSION_PASSWORD');
-        return $this;
-    }
-
     public function all()
     {
         $response = $this->callApi('torrent-get', ['fields' => $this->defaultFields]);
