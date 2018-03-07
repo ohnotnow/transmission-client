@@ -1,0 +1,13 @@
+<phpunit bootstrap="vendor/autoload.php">
+  <testsuites>
+    <testsuite name="transmission">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="TRANSMISSION_USERNAME" value="username"/>
+    <env name="TRANSMISSION_PASSWORD" value="secret"/>
+    <env name="TRANSMISSION_HOST" value="127.0.0.1"/>
+    <env name="TRANSMISSION_PORT" value="9091"/>
+  </php>
+</phpunit>

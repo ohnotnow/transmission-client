@@ -1,0 +1,29 @@
+{
+    "name": "ohffs/transmission-client",
+    "description": "PHP library for the Transmission BitTorrent client",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ohffs",
+            "email": "billybofh@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ohffs\\Transmission\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "kitetail/zttp": "^0.3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7",
+        "christeredvartsen/php-bittorrent": "^1.1"
+    }
+}
