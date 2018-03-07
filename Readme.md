@@ -61,8 +61,6 @@ var_dump($singleTorrent->toArray());
 
 echo $torrent->name;
 // 'Some Exciting File'
-
-*/
 ```
 
 Instead of passing the host, username etc when creating a client, you can set some environment variables which will be used :
