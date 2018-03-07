@@ -8,6 +8,8 @@ client's API.
 For now it only supports getting a list of all current torrents, fetching a specific torrent and adding
 a new torrent.  This was all I needed for my purposes in [transcopy](https://github.com/ohnotnow/transcopy).
 
+If you are a Laravel user, you might want to check out the [Laravel Wrapper](https://github.com/ohnotnow/laravel-transmission).
+
 # Installing
 
 Assuming you have [composer](https://getcomposer.org/) available :
