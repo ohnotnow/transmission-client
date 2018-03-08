@@ -14,9 +14,9 @@ class FakeClient
 
     protected $password;
 
-    protected $session;
-
     protected $torrents;
+
+    protected $filenames;
 
     public function __construct($hostname = null, $port = null, $username = null, $password = null)
     {
@@ -25,6 +25,7 @@ class FakeClient
         $this->username = $username ?: getenv('TRANSMISSION_USERNAME');
         $this->password = $password ?: getenv('TRANSMISSION_PASSWORD');
         $this->torrents = [];
+        $this->filenames = [];
     }
 
     public function authenticate($username = null, $password = null)
@@ -60,7 +61,14 @@ class FakeClient
 
     public function add($filename, $paused = false)
     {
-        $fileInfo = $this->extractTorrentInfo($filename);
+        try {
+            $fileInfo = $this->extractTorrentInfo($filename);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException('invalid or corrupt torrent file');
+        }
+        if (array_key_exists($filename, $this->filenames)) {
+            return $this->find($this->filenames[$filename]);
+        }
         $entry = new TorrentEntry([
             'name' => $fileInfo['info']['name'],
             'id' => rand(1, 1000000),
@@ -75,6 +83,7 @@ class FakeClient
             'percentDone' => 0,
         ]);
         $this->torrents[] = $entry;
+        $this->filenames[$filename] = $entry->id;
         return $entry;
     }
 

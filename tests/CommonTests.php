@@ -5,29 +5,72 @@ namespace Tests;
 trait CommonTests
 {
     /** @test */
+    public function we_can_add_a_valid_torrent()
+    {
+        $client = $this->getClient();
+
+        $torrent = $client->addPaused(__DIR__ . '/data/asimov_foundation_archive_org.torrent');
+
+        $this->assertNotNull($torrent);
+        $this->assertEquals("IsaacAsimovFoundation6Of864kb", $torrent->name);
+
+        $client->remove($torrent->id);
+    }
+
+    /** @test */
+    public function adding_an_invalid_torrent_throws_an_invalid_argument_exception()
+    {
+        $client = $this->getClient();
+
+        try {
+            $torrent = $client->addPaused('not-a.torrent');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertEquals('invalid or corrupt torrent file', $e->getMessage());
+            return true;
+        }
+
+        $this->fail('Expected an InvalidArgumentException but none was thrown');
+    }
+
+    /** @test */
+    public function adding_the_same_torrent_twice_returns_a_copy_of_the_original_torrent_entry()
+    {
+        $client = $this->getClient();
+
+        $firstTry = $client->addPaused(__DIR__ . '/data/asimov_foundation_archive_org.torrent');
+        $secondTry = $client->addPaused(__DIR__ . '/data/asimov_foundation_archive_org.torrent');
+
+        $client->remove($firstTry->id);
+        $this->assertEquals($firstTry->id, $secondTry->id);
+        $this->assertEquals($firstTry->name, $secondTry->name);
+    }
+
+    /** @test */
     public function can_get_a_list_of_all_torrents()
     {
         $client = $this->getClient();
 
+        sleep(1); // slow transmission api manual delay :-/
         $originalTorrents = $client->all();
 
         $torrent = $client->addPaused(__DIR__ . '/data/asimov_foundation_archive_org.torrent');
 
         $torrents = $client->all();
 
-        $this->assertEquals(count($originalTorrents) + 1, count($torrents));
         $client->remove($torrent->id);
+        $this->assertEquals(count($originalTorrents) + 1, count($torrents));
     }
 
     /** @test */
     public function can_get_a_single_torrent()
     {
         $client = $this->getClient();
-        sleep(1); // the api can be a bit slow, so force a delay so the test has clean data :-/
+        sleep(1); // slow transmission api manual delay :-/
         $torrent1 = $client->addPaused(__DIR__ . '/data/asimov_foundation_archive_org.torrent');
 
         $torrent = $client->find($torrent1->id);
 
+        $client->remove($torrent->id);
         $this->assertArraySubset(
             [
               "doneDate" => 0,
@@ -44,7 +87,6 @@ trait CommonTests
             $torrent->toArray()
         );
         $this->assertArrayHasKey('downloadDir', $torrent->toArray());
-        $client->remove($torrent->id);
     }
 
     /** @test */

@@ -70,7 +70,14 @@ class Client
     public function add($filename, $paused = false)
     {
         $response = $this->callApi('torrent-add', ['filename' => $filename, 'paused' => $paused]);
-        return new TorrentEntry($response->json()['arguments']['torrent-added']);
+        $data = $response->json();
+        if (array_key_exists('torrent-duplicate', $data['arguments'])) {
+            return $this->find($data['arguments']['torrent-duplicate']['id']);
+        }
+        if (! array_key_exists('torrent-added', $data['arguments'])) {
+            throw new \InvalidArgumentException($data['result']);
+        }
+        return new TorrentEntry($data['arguments']['torrent-added']);
     }
 
     public function addPaused($filename)
