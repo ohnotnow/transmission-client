@@ -120,7 +120,7 @@ class Client
 
     protected function buildBaseRequest()
     {
-        $query = Zttp::withHeaders(['x-transmission-session-id' => $this->token]);
+        $query = Zttp::withHeaders(['x-transmission-session-id' => $this->token ?? 'x']);
         if ($this->username) {
             $query = $query->withBasicAuth($this->username, $this->password);
         }
